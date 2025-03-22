@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Timer with Mode Switch</title>
+    <title>Timer with Mode Switch and Phase Names</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body {
@@ -13,7 +13,6 @@
             min-height: 100vh;
             background-color: #3a0605;
             color: #f5f5f5;
-            overflow-x: hidden;
         }
         
         /* Timer styling */
@@ -26,209 +25,10 @@
             z-index: 100;
         }
         
-        .timer-wrapper {
-            display: inline-block;
-            position: relative;
-        }
-        
-        #phase-indicator {
-            position: absolute;
-            top: -50px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-family: 'Montserrat', sans-serif;
-            font-size: 24px;
-            font-weight: 600;
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 5px 20px;
-            border-radius: 10px;
-            transition: all 0.5s ease;
-        }
-        
-        #timer {
-            font-size: 90px;
-            font-weight: bold;
-            font-family: 'Orbitron', sans-serif;
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            position: relative;
-        }
-        
-        .timer-pulse {
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); text-shadow: 0 0 20px rgba(255, 50, 50, 0.8); }
-            100% { transform: scale(1); }
-        }
-        
-        .timer-warning {
-            animation: warning-flash 1s infinite;
-        }
-        
-        @keyframes warning-flash {
-            0% { color: white; }
-            50% { color: #ff3b4a; }
-            100% { color: white; }
-        }
-        
-        .timer-critical {
-            animation: critical-flash 0.5s infinite;
-        }
-        
-        @keyframes critical-flash {
-            0% { color: white; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
-            50% { color: #ff0000; text-shadow: 0 0 20px rgba(255, 0, 0, 0.8); }
-            100% { color: white; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
-        }
-        
-        /* Controls Panel */
-        .controls-panel {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 10px;
-            display: flex;
-            gap: 10px;
-            z-index: 1000;
-            transition: opacity 0.3s ease;
-            opacity: 0.2;
-        }
-        
-        .controls-panel:hover {
-            opacity: 1;
-        }
-        
-        .control-btn {
-            background-color: #2c2c2c;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-family: 'Montserrat', sans-serif;
-            transition: all 0.3s ease;
-        }
-        
-        .control-btn:hover {
-            background-color: #3a3a3a;
-            transform: translateY(-2px);
-        }
-        
-        .control-btn:active {
-            transform: translateY(1px);
-        }
-        
-        .edit-timer-panel {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.85);
-            border-radius: 10px;
-            padding: 20px;
-            z-index: 1001;
-            display: none;
-            flex-direction: column;
-            gap: 15px;
-            width: 300px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-        }
-        
-        .edit-timer-panel h2 {
-            margin: 0 0 15px 0;
-            color: white;
-            font-family: 'Montserrat', sans-serif;
-            text-align: center;
-        }
-        
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-        
-        .input-group label {
-            color: #dddddd;
-            font-size: 14px;
-        }
-        
-        .input-group input {
-            padding: 8px;
-            border-radius: 5px;
-            border: 1px solid #444;
-            background-color: #333;
-            color: white;
-        }
-        
-        .button-group {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-        
-        /* Mode indicator */
-        .mode-indicator {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 600;
-            z-index: 100;
-            transition: all 0.3s ease;
-        }
-        
-        .normal-mode {
-            background-color: rgba(30, 76, 139, 0.7);
-        }
-        
-        .crisis-mode {
-            background-color: rgba(183, 28, 28, 0.7);
-        }
-        
-        /* Keypress indicators */
-        .key-hint {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            font-family: 'Roboto', sans-serif;
-            font-size: 14px;
-            z-index: 90;
-            transition: opacity 0.3s ease;
-            opacity: 0.5;
-        }
-        
-        .key-hint:hover {
-            opacity: 1;
-        }
-        
-        .key {
-            display: inline-block;
-            padding: 2px 8px;
-            margin: 0 2px;
-            background-color: #555;
-            border-radius: 3px;
-            border: 1px solid #777;
-            font-family: 'Courier New', monospace;
-        }
-        
         #motivational-quote {
             color: white;
             font-size: 20px;
-            font-family: 'Roboto', sans-serif;
+            font-family:'Roboto', sans-serif;
             font-weight: 400;
             line-height: 1.5;
             transition: opacity 0.5s ease;
@@ -236,24 +36,122 @@
             top: 2px;
         }
         
+        #timer {
+            font-size: 90px;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        #phase-name {
+            font-size: 24px;
+            font-weight: bold;
+            font-family: 'Montserrat', sans-serif;
+            margin-top: 15px;
+            color: #f5f5f5;
+        }
+        
+        /* Timer controls */
+        .timer-controls {
+            position: absolute;
+            top: 510px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+            margin-top: 20px;
+        }
+        
+        .control-button {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: 2px solid #1976D2;
+            border-radius: 5px;
+            padding: 8px 15px;
+            margin: 0 5px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .control-button:hover {
+            background-color: rgba(25, 118, 210, 0.7);
+        }
+        
+        /* Timer presets */
+        .timer-presets {
+            position: absolute;
+            top: 560px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+            margin-top: 10px;
+            display: none;
+        }
+        
+        .preset-button {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: 1px solid #1976D2;
+            border-radius: 5px;
+            padding: 6px 12px;
+            margin: 5px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .preset-button:hover {
+            background-color: rgba(25, 118, 210, 0.7);
+        }
+        
+        /* Custom timer form */
+        #custom-timer-form {
+            position: absolute;
+            top: 560px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            z-index: 110;
+            display: none;
+            width: 300px;
+        }
+        
+        .form-group {
+            margin-bottom: 10px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: white;
+            margin-bottom: 5px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #222;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .form-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
         /* Make sure the content fills the page */
         #content {
             min-height: 100vh;
             position: relative;
-        }
-        
-        /* Overlay animation */
-        .mode-transition-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: black;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.5s ease;
         }
     </style>
     
@@ -262,15 +160,15 @@
         let totalSeconds = 12 * 60 * 60;
         let timerInterval;
         let timerStarted = false;
-        let currentPhase = 1;
-        let currentMode = "normal";
+        let currentPhase = "Default Phase";
+        let savedTimers = [];
 
         // Function to save timer state to localStorage
         function saveTimerState() {
             localStorage.setItem('timerSeconds', totalSeconds);
             localStorage.setItem('timerStarted', timerStarted);
             localStorage.setItem('currentPhase', currentPhase);
-            localStorage.setItem('currentMode', currentMode);
+            localStorage.setItem('savedTimers', JSON.stringify(savedTimers));
         }
 
         // Function to load timer state from localStorage
@@ -278,20 +176,20 @@
             const savedSeconds = localStorage.getItem('timerSeconds');
             const savedStarted = localStorage.getItem('timerStarted');
             const savedPhase = localStorage.getItem('currentPhase');
-            const savedMode = localStorage.getItem('currentMode');
+            const savedTimersString = localStorage.getItem('savedTimers');
             
             if (savedSeconds !== null) {
                 totalSeconds = parseInt(savedSeconds);
             }
             
             if (savedPhase !== null) {
-                currentPhase = parseInt(savedPhase);
-                updatePhaseIndicator();
+                currentPhase = savedPhase;
+                document.getElementById('phase-name').textContent = currentPhase;
             }
             
-            if (savedMode !== null) {
-                currentMode = savedMode;
-                updateModeIndicator();
+            if (savedTimersString !== null) {
+                savedTimers = JSON.parse(savedTimersString);
+                updatePresetButtons();
             }
             
             if (savedStarted === 'true') {
@@ -309,21 +207,6 @@
             let minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
             let seconds = String(totalSeconds % 60).padStart(2, '0');
             document.getElementById('timer').textContent = `${hours}:${minutes}:${seconds}`;
-            
-            // Add animations based on remaining time
-            const timerElement = document.getElementById('timer');
-            
-            // Remove all animation classes first
-            timerElement.classList.remove('timer-pulse', 'timer-warning', 'timer-critical');
-            
-            // Add appropriate animation class based on remaining time
-            if (totalSeconds <= 300) { // Less than 5 minutes - critical
-                timerElement.classList.add('timer-critical');
-            } else if (totalSeconds <= 1800) { // Less than 30 minutes - warning
-                timerElement.classList.add('timer-warning');
-            } else if (timerStarted) { // Normal countdown - subtle pulse
-                timerElement.classList.add('timer-pulse');
-            }
         }
 
         // Start the timer
@@ -331,15 +214,14 @@
             if (!timerInterval) {
                 timerInterval = setInterval(updateTimer, 1000);
                 timerStarted = true;
-                document.getElementById('start-btn').textContent = 'Pause';
-                saveTimerState();
+                document.getElementById('start-button').textContent = 'Pause';
             } else {
                 clearInterval(timerInterval);
                 timerInterval = null;
                 timerStarted = false;
-                document.getElementById('start-btn').textContent = 'Start';
-                saveTimerState();
+                document.getElementById('start-button').textContent = 'Start';
             }
+            saveTimerState();
         }
 
         // Reset the timer
@@ -347,8 +229,8 @@
             clearInterval(timerInterval);
             timerInterval = null;
             timerStarted = false;
-            document.getElementById('start-btn').textContent = 'Start';
             totalSeconds = 12 * 60 * 60;
+            document.getElementById('start-button').textContent = 'Start';
             updateTimerDisplay();
             saveTimerState();
         }
@@ -361,347 +243,244 @@
             } else {
                 clearInterval(timerInterval);
                 timerInterval = null;
-                timerStarted = false;
-                document.getElementById('start-btn').textContent = 'Start';
-                
-                // Alert when timer reaches zero
-                showNotification("Timer complete!");
+                document.getElementById('start-button').textContent = 'Start';
+                // Optional: Play a sound or show a notification when timer ends
+                alert("Timer finished!");
             }
         }
 
         function loadPage(page) {
-            // Show transition overlay
-            const overlay = document.querySelector('.mode-transition-overlay');
-            overlay.style.opacity = '1';
-            
-            setTimeout(() => {
-                fetch(page)
-                    .then(response => response.text())
-                    .then(html => {
-                        document.getElementById("content").innerHTML = html;
-                        document.getElementById("content").setAttribute("data-page", page);
-                        
-                        // Update current mode
-                        currentMode = page === "normal.html" ? "normal" : "crisis";
-                        updateModeIndicator();
-                        saveTimerState();
-                        
-                        // Hide overlay after content is loaded
-                        setTimeout(() => {
-                            overlay.style.opacity = '0';
-                        }, 300);
-                    })
-                    .catch(error => {
-                        console.error("Error loading page:", error);
-                        overlay.style.opacity = '0';
-                    });
-            }, 300);
+            fetch(page)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("content").innerHTML = html;
+                    document.getElementById("content").setAttribute("data-page", page);
+                    updateTimerColor(page);
+                })
+                .catch(error => console.error("Error loading page:", error));
         }
         
         // Update timer color based on mode
-        function updateTimerColor() {
+        function updateTimerColor(page) {
             const timerElement = document.getElementById('timer');
-            const phaseElement = document.getElementById('phase-indicator');
-            
-            if (currentMode === "normal") {
-                timerElement.style.color = '#000000';
-                phaseElement.style.color = '#ffffff';
-                phaseElement.style.backgroundColor = 'rgba(30, 76, 139, 0.7)';
+            const phaseElement = document.getElementById('phase-name');
+            if (page === "normal.html") {
+                timerElement.style.color = 'black'; // Black text for normal mode
+                phaseElement.style.color = 'black'; // Black text for phase name in normal mode
             } else {
-                timerElement.style.color = '#ffffff';
-                phaseElement.style.color = '#ffffff';
-                phaseElement.style.backgroundColor = 'rgba(183, 28, 28, 0.7)';
-            }
-        }
-        
-        // Update phase indicator
-        function updatePhaseIndicator() {
-            document.getElementById('phase-indicator').textContent = `PHASE ${currentPhase}`;
-        }
-        
-        // Update mode indicator
-        function updateModeIndicator() {
-            const modeIndicator = document.querySelector('.mode-indicator');
-            
-            if (currentMode === "normal") {
-                modeIndicator.textContent = "NORMAL MODE";
-                modeIndicator.classList.remove('crisis-mode');
-                modeIndicator.classList.add('normal-mode');
-            } else {
-                modeIndicator.textContent = "CRISIS MODE";
-                modeIndicator.classList.remove('normal-mode');
-                modeIndicator.classList.add('crisis-mode');
-            }
-            
-            updateTimerColor();
-        }
-        
-        // Show/hide timer edit panel
-        function toggleEditPanel() {
-            const panel = document.querySelector('.edit-timer-panel');
-            
-            if (panel.style.display === 'flex') {
-                panel.style.display = 'none';
-            } else {
-                // Set current values in form
-                document.getElementById('hours-input').value = Math.floor(totalSeconds / 3600);
-                document.getElementById('minutes-input').value = Math.floor((totalSeconds % 3600) / 60);
-                document.getElementById('seconds-input').value = totalSeconds % 60;
-                document.getElementById('phase-input').value = currentPhase;
-                
-                panel.style.display = 'flex';
-            }
-        }
-        
-        // Save timer settings
-        function saveTimerSettings() {
-            const hours = parseInt(document.getElementById('hours-input').value) || 0;
-            const minutes = parseInt(document.getElementById('minutes-input').value) || 0;
-            const seconds = parseInt(document.getElementById('seconds-input').value) || 0;
-            const phase = parseInt(document.getElementById('phase-input').value) || 1;
-            
-            totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
-            currentPhase = phase;
-            
-            updateTimerDisplay();
-            updatePhaseIndicator();
-            saveTimerState();
-            
-            toggleEditPanel();
-            
-            // Show notification
-            showNotification("Timer settings updated");
-        }
-        
-        // Show notification
-        function showNotification(message) {
-            // Check if notification element exists, if not create it
-            let notification = document.getElementById('notification');
-            
-            if (!notification) {
-                notification = document.createElement('div');
-                notification.id = 'notification';
-                notification.style.position = 'fixed';
-                notification.style.top = '20px';
-                notification.style.left = '50%';
-                notification.style.transform = 'translateX(-50%)';
-                notification.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-                notification.style.color = 'white';
-                notification.style.padding = '10px 20px';
-                notification.style.borderRadius = '5px';
-                notification.style.fontFamily = 'Montserrat, sans-serif';
-                notification.style.zIndex = '2000';
-                notification.style.opacity = '0';
-                notification.style.transition = 'opacity 0.3s ease';
-                
-                document.body.appendChild(notification);
-            }
-            
-            // Set message and show notification
-            notification.textContent = message;
-            notification.style.opacity = '1';
-            
-            // Hide after 3 seconds
-            setTimeout(() => {
-                notification.style.opacity = '0';
-            }, 3000);
-        }
-        
-        // Increment phase
-        function incrementPhase() {
-            currentPhase++;
-            updatePhaseIndicator();
-            saveTimerState();
-            showNotification(`Advanced to Phase ${currentPhase}`);
-            
-            // Add a visual effect when changing phase
-            const phaseElement = document.getElementById('phase-indicator');
-            phaseElement.style.transform = 'translateX(-50%) scale(1.2)';
-            setTimeout(() => {
-                phaseElement.style.transform = 'translateX(-50%) scale(1)';
-            }, 300);
-        }
-        
-        // Decrement phase
-        function decrementPhase() {
-            if (currentPhase > 1) {
-                currentPhase--;
-                updatePhaseIndicator();
-                saveTimerState();
-                showNotification(`Returned to Phase ${currentPhase}`);
-                
-                // Add a visual effect when changing phase
-                const phaseElement = document.getElementById('phase-indicator');
-                phaseElement.style.transform = 'translateX(-50%) scale(0.8)';
-                setTimeout(() => {
-                    phaseElement.style.transform = 'translateX(-50%) scale(1)';
-                }, 300);
+                timerElement.style.color = 'white'; // White text for crisis mode
+                phaseElement.style.color = 'white'; // White text for phase name in crisis mode
             }
         }
 
+        // Show/hide timer presets
+        function togglePresets() {
+            const presetContainer = document.getElementById('timer-presets');
+            if (presetContainer.style.display === 'none' || presetContainer.style.display === '') {
+                presetContainer.style.display = 'block';
+            } else {
+                presetContainer.style.display = 'none';
+            }
+        }
+
+        // Show custom timer form
+        function showCustomTimerForm() {
+            document.getElementById('custom-timer-form').style.display = 'block';
+            document.getElementById('timer-presets').style.display = 'none';
+        }
+
+        // Set a custom timer
+        function setCustomTimer() {
+            const hours = parseInt(document.getElementById('hours').value) || 0;
+            const minutes = parseInt(document.getElementById('minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('seconds').value) || 0;
+            const phaseName = document.getElementById('phase-name-input').value || "Phase";
+            
+            totalSeconds = (hours * 3600) + (minutes * 60) + seconds;
+            currentPhase = phaseName;
+            
+            document.getElementById('phase-name').textContent = currentPhase;
+            
+            // Save this timer to presets
+            if (document.getElementById('save-preset').checked) {
+                savedTimers.push({
+                    name: phaseName,
+                    seconds: totalSeconds
+                });
+                updatePresetButtons();
+            }
+            
+            updateTimerDisplay();
+            document.getElementById('custom-timer-form').style.display = 'none';
+            saveTimerState();
+        }
+
+        // Cancel custom timer form
+        function cancelCustomTimer() {
+            document.getElementById('custom-timer-form').style.display = 'none';
+        }
+
+        // Load a preset timer
+        function loadPreset(index) {
+            const preset = savedTimers[index];
+            totalSeconds = preset.seconds;
+            currentPhase = preset.name;
+            document.getElementById('phase-name').textContent = currentPhase;
+            updateTimerDisplay();
+            document.getElementById('timer-presets').style.display = 'none';
+            saveTimerState();
+        }
+
+        // Update preset buttons
+        function updatePresetButtons() {
+            const container = document.getElementById('timer-presets');
+            container.innerHTML = '';
+            
+            savedTimers.forEach((timer, index) => {
+                const button = document.createElement('button');
+                button.className = 'preset-button';
+                button.textContent = `${timer.name}`;
+                button.onclick = function() { loadPreset(index); };
+                container.appendChild(button);
+            });
+            
+            // Add button for custom timer
+            const customButton = document.createElement('button');
+            customButton.className = 'preset-button';
+            customButton.textContent = '+ Custom Timer';
+            customButton.onclick = showCustomTimerForm;
+            container.appendChild(customButton);
+        }
+
+        // Initialize on page load
         document.addEventListener("DOMContentLoaded", function () {
-            // Create overlay for transitions
-            const overlay = document.createElement('div');
-            overlay.className = 'mode-transition-overlay';
-            document.body.appendChild(overlay);
+            loadPage("normal.html"); // Load default normal mode
             
-            // Create timer wrapper and phase indicator
-            const timerContainer = document.querySelector('.timer-container');
-            const timerWrapper = document.createElement('div');
-            timerWrapper.className = 'timer-wrapper';
+            // Create phase name element
+            const phaseElement = document.createElement('div');
+            phaseElement.id = 'phase-name';
+            phaseElement.textContent = currentPhase;
+            document.querySelector('.timer-container').appendChild(phaseElement);
             
-            const phaseIndicator = document.createElement('div');
-            phaseIndicator.id = 'phase-indicator';
-            phaseIndicator.textContent = 'PHASE 1';
+            // Create timer controls
+            createTimerControls();
             
-            timerWrapper.appendChild(phaseIndicator);
-            timerWrapper.appendChild(document.getElementById('timer'));
-            timerContainer.appendChild(timerWrapper);
+            // Create timer presets container
+            const presetsContainer = document.createElement('div');
+            presetsContainer.id = 'timer-presets';
+            presetsContainer.className = 'timer-presets';
+            document.body.appendChild(presetsContainer);
             
-            // Create mode indicator
-            const modeIndicator = document.createElement('div');
-            modeIndicator.className = 'mode-indicator normal-mode';
-            modeIndicator.textContent = 'NORMAL MODE';
-            document.body.appendChild(modeIndicator);
-            
-            // Create controls panel
-            const controlsPanel = document.createElement('div');
-            controlsPanel.className = 'controls-panel';
-            
-            const startBtn = document.createElement('button');
-            startBtn.id = 'start-btn';
-            startBtn.className = 'control-btn';
-            startBtn.textContent = 'Start';
-            startBtn.onclick = startTimer;
-            
-            const resetBtn = document.createElement('button');
-            resetBtn.className = 'control-btn';
-            resetBtn.textContent = 'Reset';
-            resetBtn.onclick = resetTimer;
-            
-            const editBtn = document.createElement('button');
-            editBtn.className = 'control-btn';
-            editBtn.textContent = 'Edit Timer';
-            editBtn.onclick = toggleEditPanel;
-            
-            const modeBtn = document.createElement('button');
-            modeBtn.className = 'control-btn';
-            modeBtn.textContent = 'Toggle Mode';
-            modeBtn.onclick = function() {
-                let currentPage = document.getElementById("content").getAttribute("data-page");
-                let newPage = currentPage === "normal.html" ? "crisis.html" : "normal.html";
-                loadPage(newPage);
-            };
-            
-            const phaseUpBtn = document.createElement('button');
-            phaseUpBtn.className = 'control-btn';
-            phaseUpBtn.textContent = 'Phase +';
-            phaseUpBtn.onclick = incrementPhase;
-            
-            const phaseDownBtn = document.createElement('button');
-            phaseDownBtn.className = 'control-btn';
-            phaseDownBtn.textContent = 'Phase -';
-            phaseDownBtn.onclick = decrementPhase;
-            
-            controlsPanel.appendChild(startBtn);
-            controlsPanel.appendChild(resetBtn);
-            controlsPanel.appendChild(editBtn);
-            controlsPanel.appendChild(modeBtn);
-            controlsPanel.appendChild(phaseUpBtn);
-            controlsPanel.appendChild(phaseDownBtn);
-            
-            document.body.appendChild(controlsPanel);
-            
-            // Create edit timer panel
-            const editPanel = document.createElement('div');
-            editPanel.className = 'edit-timer-panel';
-            editPanel.innerHTML = `
-                <h2>Edit Timer</h2>
-                <div class="input-group">
-                    <label for="hours-input">Hours:</label>
-                    <input type="number" id="hours-input" min="0" max="99">
-                </div>
-                <div class="input-group">
-                    <label for="minutes-input">Minutes:</label>
-                    <input type="number" id="minutes-input" min="0" max="59">
-                </div>
-                <div class="input-group">
-                    <label for="seconds-input">Seconds:</label>
-                    <input type="number" id="seconds-input" min="0" max="59">
-                </div>
-                <div class="input-group">
-                    <label for="phase-input">Phase Number:</label>
-                    <input type="number" id="phase-input" min="1" max="99">
-                </div>
-                <div class="button-group">
-                    <button id="cancel-btn" class="control-btn">Cancel</button>
-                    <button id="save-btn" class="control-btn">Save</button>
-                </div>
-            `;
-            
-            document.body.appendChild(editPanel);
-            
-            // Set up the edit panel buttons
-            document.getElementById('save-btn').addEventListener('click', saveTimerSettings);
-            document.getElementById('cancel-btn').addEventListener('click', toggleEditPanel);
-            
-            // Create key hint information
-            const keyHint = document.createElement('div');
-            keyHint.className = 'key-hint';
-            keyHint.innerHTML = `
-                Keyboard Shortcuts:<br>
-                <span class="key">T</span> Toggle Mode<br>
-                <span class="key">P</span> Start/Pause Timer<br>
-                <span class="key">Y</span> Reset Timer<br>
-                <span class="key">+</span> Increase Phase<br>
-                <span class="key">-</span> Decrease Phase
-            `;
-            
-            document.body.appendChild(keyHint);
-            
-            // Load default normal mode
-            loadPage("normal.html");
+            // Create custom timer form
+            createCustomTimerForm();
             
             // Load timer state from localStorage
             loadTimerState();
+            
+            // Initialize presets with some default options if none exist
+            if (savedTimers.length === 0) {
+                savedTimers = [
+                    { name: "Pomodoro", seconds: 25 * 60 },
+                    { name: "Short Break", seconds: 5 * 60 },
+                    { name: "Long Break", seconds: 15 * 60 },
+                    { name: "Phase 1", seconds: 1 * 60 * 60 },
+                    { name: "Phase 2", seconds: 2 * 60 * 60 }
+                ];
+                updatePresetButtons();
+                saveTimerState();
+            }
         });
 
-        // Keydown event listeners
+        // Create timer controls
+        function createTimerControls() {
+            const controlsContainer = document.createElement('div');
+            controlsContainer.className = 'timer-controls';
+            
+            const startButton = document.createElement('button');
+            startButton.id = 'start-button';
+            startButton.className = 'control-button';
+            startButton.textContent = 'Start';
+            startButton.onclick = startTimer;
+            
+            const resetButton = document.createElement('button');
+            resetButton.className = 'control-button';
+            resetButton.textContent = 'Reset';
+            resetButton.onclick = resetTimer;
+            
+            const presetsButton = document.createElement('button');
+            presetsButton.className = 'control-button';
+            presetsButton.textContent = 'Change Timer';
+            presetsButton.onclick = togglePresets;
+            
+            controlsContainer.appendChild(startButton);
+            controlsContainer.appendChild(resetButton);
+            controlsContainer.appendChild(presetsButton);
+            
+            document.body.appendChild(controlsContainer);
+        }
+
+        // Create custom timer form
+        function createCustomTimerForm() {
+            const form = document.createElement('div');
+            form.id = 'custom-timer-form';
+            
+            form.innerHTML = `
+                <div class="form-group">
+                    <label for="phase-name-input">Phase Name:</label>
+                    <input type="text" id="phase-name-input" placeholder="Enter phase name">
+                </div>
+                <div class="form-group">
+                    <label for="hours">Hours:</label>
+                    <input type="number" id="hours" min="0" max="99" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="minutes">Minutes:</label>
+                    <input type="number" id="minutes" min="0" max="59" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="seconds">Seconds:</label>
+                    <input type="number" id="seconds" min="0" max="59" value="0">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="save-preset" checked>
+                        Save as preset
+                    </label>
+                </div>
+                <div class="form-buttons">
+                    <button class="control-button" onclick="setCustomTimer()">Set Timer</button>
+                    <button class="control-button" onclick="cancelCustomTimer()">Cancel</button>
+                </div>
+            `;
+            
+            document.body.appendChild(form);
+        }
+
         document.addEventListener("keydown", function (event) {
-            // Toggle mode with T key
             if (event.key === "T" || event.key === "t") {
                 let currentPage = document.getElementById("content").getAttribute("data-page");
                 let newPage = currentPage === "normal.html" ? "crisis.html" : "normal.html";
                 loadPage(newPage);
             }
             
-            // Start/pause timer with P key
+            // Start/pause timer when P is pressed
             if (event.key === "P" || event.key === "p") {
                 startTimer();
             }
             
-            // Reset timer with Y key
+            // Reset timer when Y is pressed
             if (event.key === "Y" || event.key === "y") {
                 resetTimer();
             }
-            
-            // Increment phase with + key
-            if (event.key === "+" || event.key === "=") {
-                incrementPhase();
-            }
-            
-            // Decrement phase with - key
-            if (event.key === "-" || event.key === "_") {
-                decrementPhase();
-            }
-            
-            // Toggle edit panel with E key
-            if (event.key === "E" || event.key === "e") {
-                toggleEditPanel();
-            }
+        });
+        
+        // Save timer state before page unloads
+        window.addEventListener("beforeunload", function() {
+            saveTimerState();
         });
         
         // Motivational Quotes Code
+        // Array of motivational quotes
         const quotes = [
           "Success is not final, failure is not fatal: It is the courage to continue that counts.",
           "The future belongs to those who believe in the beauty of their dreams.",
@@ -729,9 +508,65 @@
           }
         }
 
-        // Save timer state before page unloads
-        window.addEventListener("beforeunload", function() {
-            saveTimerState();
+        // Create quote container when DOM is loaded
+        document.addEventListener("DOMContentLoaded", function() {
+          // Create quote container
+          const quoteContainer = document.createElement('div');
+          quoteContainer.id = 'quote-container';
+          
+          // Position the quote box appropriately
+          quoteContainer.style.position = 'absolute';
+          quoteContainer.style.left = '50%';
+          quoteContainer.style.transform = 'translateX(-50%)';
+          quoteContainer.style.width = '700px'; // Small box width
+          quoteContainer.style.maxWidth = '90%';
+          quoteContainer.style.textAlign = 'center';
+          quoteContainer.style.padding = '10px 25px';
+          quoteContainer.style.top = '76%';
+          quoteContainer.style.transform = 'translate(-50%, -50%)';
+          quoteContainer.style.backgroundColor = 'rgba(25, 118, 210, 0.9)'; // Reddish color
+          quoteContainer.style.borderRadius = '10px';
+          quoteContainer.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.3)';
+          quoteContainer.style.zIndex = '90';
+          
+          // Create quote element with improved font styling
+          const quoteElement = document.createElement('div');
+          quoteElement.id = 'motivational-quote';
+          quoteElement.style.color = 'white';
+          quoteElement.style.fontSize = '28px'; // Larger font
+          quoteElement.style.fontFamily = "'Roboto', 'Georgia', serif"; // More elegant font
+          quoteElement.style.fontWeight = '400';
+          quoteElement.style.lineHeight = '1.6';
+          quoteElement.style.transition = 'opacity 0.5s ease';
+          
+          quoteContainer.appendChild(quoteElement);
+          document.body.appendChild(quoteContainer);
+          
+          // Start rotating quotes
+          rotateQuotes();
+          setInterval(rotateQuotes, 10000); // Change quote every 10 seconds
+          
+          // Function to show/hide quotes based on mode
+          function updateQuoteVisibility(page) {
+            if (page === "normal.html") {
+              quoteContainer.style.display = 'block'; // Show quotes in normal mode
+            } else {
+              quoteContainer.style.display = 'none'; // Hide quotes in crisis mode
+            }
+          }
+          
+          // Initial visibility check
+          updateQuoteVisibility("normal.html");
+          
+          // Update when switching modes
+          document.addEventListener("keydown", function(event) {
+            if (event.key === "T" || event.key === "t") {
+              setTimeout(() => {
+                const currentPage = document.getElementById("content").getAttribute("data-page");
+                updateQuoteVisibility(currentPage);
+              }, 100);
+            }
+          });
         });
     </script>
 </head>
