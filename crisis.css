@@ -1,0 +1,9 @@
+body {
+    background: black;
+    color: rgb(255, 108, 108);
+    font-family: 'Courier New', monospace;
+    text-align: center;
+}
+.container {
+    padding: 20px;
+}

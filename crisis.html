@@ -1,0 +1,237 @@
+<!-- Crisis Mode Content -->
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Tektur:wght@400;500;700&display=swap');
+    :root {
+        --primary-red: hsl(348, 100%, 70%);
+        --dark-red: #b71c1c;
+        --light-red: #ff3b4a;
+        --bg-dark: #1a1a1a;
+        --text-light: #f5f5f5;
+    }
+    
+  /* Add this to your existing crisis.html CSS */
+body {
+    background-color: #3a0605;
+    background-image: url('crisis.png'); /* Replace with your image filename */
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: var(--text-light);
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+}
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        position: relative;
+    }
+    
+    .crisis-label {
+        text-align: center;
+        font-size: 50px;
+        font-weight: bold;
+        margin: 220px 0 40px 0;
+        font-family: 'Tektur', sans-serif;
+        color: #FF0000;
+    }
+    
+    .sector-boxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap:250px;
+    max-width: 1000px; /* Adjust this to control overall width */
+    margin: 0 auto; /* Centers the grid */
+    padding: 0 20px;
+    
+    /* Add these lines to shift everything a bit to the right */
+    position: relative;
+    
+    right: 180px; /* Positive value shifts right, negative shifts left */
+}
+    
+    .sector-box {
+    background-color: var(--bg-dark);
+    border-left: 4px solid var(--light-red);
+    padding: 150px; /* Increase padding to make boxes bigger */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 8px; /* Rounded corners as requested earlier */
+    min-height: 180px; /* Add minimum height to make boxes bigger */
+    width: 260px; /* Add this line to make boxes wider horizontally */
+    max-width: 100%;
+}
+    
+    .sector-title {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: var(--light-red);
+    }
+    
+    .sector-value {
+        font-size: 2.8rem;
+        font-weight: bold;
+        color: var(--text-light);
+        position: relative;
+        
+        margin-top: 40px;
+        left: 21%; /* Can be adjusted to move horizontally */
+        bottom: 0.2%;
+    }
+    
+    .sector-type {
+    font-size: 24px; /* Increase font size from default */
+    font-weight: 500; /* Add some weight to make it stand out */
+    margin-top: 10px; /* Add some space above the text */
+    position: relative; /* Allow positioning */
+    left: 28%; /* Can be adjusted to move horizontally */
+    bottom: 60%;
+    color: var(--light-red) /* Can be adjusted to move vertically */
+}
+    
+.sector-typefood {
+    font-size: 24px; /* Increase font size from default */
+    font-weight: 500; /* Add some weight to make it stand out */
+    margin-top: 10px; /* Add some space above the text */
+    position: relative; /* Allow positioning */
+    left: 35%; /* Can be adjusted to move horizontally */
+    bottom: 60%;
+    color: var(--light-red) /* Can be adjusted to move vertically */
+}
+    
+    /* Position the boxes according to the image */
+    .box1 { 
+        grid-column: 1;
+        grid-row: 1;
+    }
+    
+    .box2 {
+        grid-column: 2;
+        grid-row: 2;
+    }
+    
+    .box3 {
+        grid-column: 1;
+        grid-row: 2;
+    }
+    
+    .box4 {
+        grid-column: 3;
+        grid-row: 2;
+    }
+    
+    .box5 {
+        grid-column: 3;
+        grid-row: 1;
+    }
+    .sector-box {
+    background-color: var(--bg-dark);
+    border-left: 4px solid var(--light-red);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-radius: 8px; /* Add this line for rounded corners */
+}
+.ticker-container {
+    position: fixed;
+    top: 0; /* Change from bottom: 0 to top: 0 */
+    left: 0;
+    width: 100%;
+    background-color: black;
+    padding: 10px 0;
+    overflow: hidden;
+    z-index: 100; /* Add this to ensure it stays on top */
+}
+
+    .ticker-content {
+        display: flex;
+        white-space: nowrap;
+        animation: ticker 30s linear infinite;
+    }
+    
+    .ticker-item {
+        display: inline-block;
+        margin: 0 30px;
+        color: var(--light-red);
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    @keyframes ticker {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
+    }
+    
+    @media (max-width: 992px) {
+        .sector-boxes {
+            grid-template-columns: 1fr;
+            grid-template-rows: repeat(5, auto);
+            gap: 15px;
+        }
+        
+        .box1, .box2, .box3, .box4, .box5 {
+            grid-column: 1;
+        }
+        
+        .box1 { grid-row: 1; }
+        .box2 { grid-row: 2; }
+        .box3 { grid-row: 3; }
+        .box4 { grid-row: 4; }
+        .box5 { grid-row: 5; }
+    }
+</style>
+
+<div class="container">    
+    <div class="crisis-label">CRISIS MODE</div>
+    
+    <div class="sector-boxes">
+        <div class="sector-box box1">
+            
+            <div class="sector-value">-32.5%</div>
+            <div class="sector-type">Agriculture</div>
+        </div>
+        
+        <div class="sector-box box5">
+            
+            <div class="sector-value">-25.3%</div>
+            <div class="sector-typefood"> Foods</div>
+        </div>
+        
+        <div class="sector-box box3">
+            
+            <div class="sector-value">-41.2%</div>
+            <div class="sector-type">Fashion</div>
+        </div>
+        
+        <div class="sector-box box2">
+            
+            <div class="sector-value">-28.7%</div>
+            <div class="sector-type">energy</div>
+        </div>
+        
+        <div class="sector-box box4">
+            
+            <div class="sector-value">-36.8%</div>
+            <div class="sector-type">IT </div>
+        </div>
+    </div>
+</div>
+
+<div class="ticker-container">
+    <div class="ticker-content">
+        <div class="ticker-item">FOOD 8%</div>
+        <div class="ticker-item">IT SECTOR -11.2%</div>
+        <div class="ticker-item">AGRICULTURE -21.5%</div>
+        <div class="ticker-item">FASHION -24.9%</div>
+        <div class="ticker-item">S&P 500 -8.7%</div>
+        <div class="ticker-item">ASDAQ -12.3%</div>
+        <div class="ticker-item">DOW JONES -9.1%</div>
+        <div class="ticker-item">TESLA -18.7%</div>
+        <div class="ticker-item">APPLE -9.4%</div>
+    </div>
+</div>

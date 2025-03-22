@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timer with Mode Switch</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@400;700&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+     body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif; /* Changed from Arial to Roboto */
+        min-height: 100vh;
+        background-color: #3a0605;
+        color: #f5f5f5;
+    }
+        
+        /* Timer styling */
+        .timer-container {
+            position: absolute;
+            top: 420px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            z-index: 100;
+        }
+        
+        #motivational-quote {
+    color: white;
+    font-size: 20px;
+    font-family:'Roboto', sans-serif; /* Changed from Merriweather/Georgia */
+    font-weight: 400;
+    line-height: 1.5;
+    transition: opacity 0.5s ease;
+    position: relative;
+    top: 2px; /* Adds a bit of spacing from the top of its container */
+}
+        
+        #timer {
+            font-size: 90px;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif; /* Digital clock-like font */
+        }
+        
+        /* Make sure the content fills the page */
+        #content {
+            min-height: 100vh;
+            position: relative;
+        }
+    </style>
+    
+    <script>
+        // Initial time: 12 hours in seconds
+        let totalSeconds = 12 * 60 * 60;
+        let timerInterval;
+        let timerStarted = false;
+
+        // Function to save timer state to localStorage
+        function saveTimerState() {
+            localStorage.setItem('timerSeconds', totalSeconds);
+            localStorage.setItem('timerStarted', timerStarted);
+        }
+
+        // Function to load timer state from localStorage
+        function loadTimerState() {
+            const savedSeconds = localStorage.getItem('timerSeconds');
+            const savedStarted = localStorage.getItem('timerStarted');
+            
+            if (savedSeconds !== null) {
+                totalSeconds = parseInt(savedSeconds);
+            }
+            
+            if (savedStarted === 'true') {
+                timerStarted = true;
+                startTimer();
+            }
+            
+            // Update display with saved time
+            updateTimerDisplay();
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            let hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+            let minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+            let seconds = String(totalSeconds % 60).padStart(2, '0');
+            document.getElementById('timer').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+
+        // Start the timer
+        function startTimer() {
+            if (!timerInterval) {
+                timerInterval = setInterval(updateTimer, 1000);
+            }
+        }
+
+        // Reset the timer
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerStarted = false;
+            totalSeconds = 12 * 60 * 60;
+            updateTimerDisplay();
+            saveTimerState();
+        }
+
+        function updateTimer() {
+            if (totalSeconds > 0) {
+                totalSeconds--;
+                updateTimerDisplay();
+                saveTimerState();
+            } else {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function loadPage(page) {
+            fetch(page)
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById("content").innerHTML = html;
+                })
+                .catch(error => console.error("Error loading page:", error));
+        }
+        
+        // Add this function to update timer color based on mode
+        function updateTimerColor(page) {
+            const timerElement = document.getElementById('timer');
+            if (page === "normal.html") {
+                timerElement.style.color = 'black'; // Black text for normal mode
+            } else {
+                timerElement.style.color = 'white'; // White text for crisis mode
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            loadPage("normal.html"); // Load default normal mode
+            updateTimerColor("normal.html"); // Set initial color to black
+            
+            // Load timer state from localStorage
+            loadTimerState();
+        });
+
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "T" || event.key === "t") {
+                let currentPage = document.getElementById("content").getAttribute("data-page");
+                let newPage = currentPage === "normal.html" ? "crisis.html" : "normal.html";
+                loadPage(newPage);
+                document.getElementById("content").setAttribute("data-page", newPage);
+                updateTimerColor(newPage); // Update timer color when switching modes
+            }
+            
+            // Start timer when P is pressed
+            if ((event.key === "P" || event.key === "p") && !timerStarted) {
+                timerStarted = true;
+                startTimer();
+                saveTimerState();
+            }
+            
+            // Reset timer when Y is pressed
+            if (event.key === "Y" || event.key === "y") {
+                resetTimer();
+            }
+        });
+        
+        // Save timer state before page unloads
+        window.addEventListener("beforeunload", function() {
+            saveTimerState();
+        });
+        
+        // Motivational Quotes Code
+        // Array of motivational quotes
+        const quotes = [
+          "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+          "The future belongs to those who believe in the beauty of their dreams.",
+          "Believe you can and you're halfway there.",
+          "The only way to do great work is to love what you do.",
+          "Don't watch the clock; do what it does. Keep going.",
+          "The best way to predict the future is to create it."
+        ];
+
+        let currentQuoteIndex = 0;
+
+        function rotateQuotes() {
+          const quoteElement = document.getElementById('motivational-quote');
+          quoteElement.textContent = quotes[currentQuoteIndex];
+          
+          // Fade in animation
+          quoteElement.style.opacity = 0;
+          setTimeout(() => {
+            quoteElement.style.opacity = 1;
+          }, 200);
+          
+          // Move to next quote
+          currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+        }
+
+        // Create quote container when DOM is loaded
+        document.addEventListener("DOMContentLoaded", function() {
+          // Create quote container
+          const quoteContainer = document.createElement('div');
+          quoteContainer.id = 'quote-container';
+          
+          // Position the quote box appropriately
+          quoteContainer.style.position = 'absolute';
+          quoteContainer.style.left = '50%';
+          quoteContainer.style.transform = 'translateX(-50%)';
+          quoteContainer.style.width = '700px'; // Small box width
+          quoteContainer.style.maxWidth = '90%';
+          quoteContainer.style.textAlign = 'center';
+          quoteContainer.style.padding = '10px 25px';
+          quoteContainer.style.top = '76%';
+          quoteContainer.style.transform = 'translate(-50%, -50%)';
+          quoteContainer.style.backgroundColor = 'rgba(25, 118, 210, 0.9)'; // Reddish color
+          quoteContainer.style.borderRadius = '10px';
+          quoteContainer.style.boxShadow = '0 3px 10px rgba(0, 0, 0, 0.3)';
+          quoteContainer.style.zIndex = '90';
+          
+          // Create quote element with improved font styling
+          const quoteElement = document.createElement('div');
+          quoteElement.id = 'motivational-quote';
+          quoteElement.style.color = 'white';
+          quoteElement.style.fontSize = '28px'; // Larger font
+          quoteElement.style.fontFamily = "'Roboto', 'Georgia', serif";
+ // More elegant font
+          quoteElement.style.fontWeight = '400';
+          
+          quoteElement.style.lineHeight = '1.6';
+          quoteElement.style.transition = 'opacity 0.5s ease';
+          
+          quoteContainer.appendChild(quoteElement);
+          document.body.appendChild(quoteContainer);
+          
+          // Start rotating quotes
+          rotateQuotes();
+          setInterval(rotateQuotes, 10000); // Change quote every 10 seconds
+          
+          // Function to show/hide quotes based on mode
+          function updateQuoteVisibility(page) {
+            if (page === "normal.html") {
+              quoteContainer.style.display = 'block'; // Show quotes in normal mode
+            } else {
+              quoteContainer.style.display = 'none'; // Hide quotes in crisis mode
+            }
+          }
+          
+          // Initial visibility check
+          updateQuoteVisibility("normal.html");
+          
+          // Update when switching modes
+          document.addEventListener("keydown", function(event) {
+            if (event.key === "T" || event.key === "t") {
+              setTimeout(() => {
+                const currentPage = document.getElementById("content").getAttribute("data-page");
+                updateQuoteVisibility(currentPage);
+              }, 100);
+            }
+          });
+        });
+    </script>
+</head>
+<body>
+    <div class="timer-container">
+        <div id="timer">12:00:00</div>
+    </div>
+    <div id="content" data-page="normal.html"></div>
+</body>
+</html>

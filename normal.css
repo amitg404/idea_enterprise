@@ -1,0 +1,9 @@
+body {
+    background: white;
+    color: black;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+.container {
+    padding: 20px;
+}
